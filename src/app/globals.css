@@ -1,26 +1,187 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #050505;
+  --color-ink-2: #080808;
+  --color-surface: #0d0d0d;
+  --color-surface-2: #111111;
+  --color-surface-3: #161616;
+  --color-line: #1f1f1f;
+  --color-line-strong: #2a2a2a;
+  --color-paper: #f4f4f4;
+  --color-paper-dim: #a3a3a3;
+  --color-paper-mute: #6b6b6b;
+  --color-blood: #c91818;
+  --color-blood-bright: #ef2b2b;
+  --color-blood-deep: #8a0e0e;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #050505;
+    --bg-secondary: #080808;
+    --surface-c: #0d0d0d;
+    --surface-2: #111111;
+    --surface-3: #161616;
+    --border-c: #1f1f1f;
+    --border-strong: #2a2a2a;
+    --text-c: #f4f4f4;
+    --text-secondary: #a3a3a3;
+    --text-muted: #7a7a7a;
+    --accent-c: #c91818;
+    --accent-bright: #ef2b2b;
+    --accent-deep: #8a0e0e;
+    --accent-ghost: rgba(201, 24, 24, 0.12);
+    --grid-line: rgba(255, 255, 255, 0.035);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-c);
+    font-family: "Inter", system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--accent-c);
+    color: #fff;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-deep);
+  }
+
+  /* Hide default cursor on fine pointers — custom cursor takes over */
+  @media (pointer: fine) {
+    body.custom-cursor,
+    body.custom-cursor a,
+    body.custom-cursor button {
+      cursor: none;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-8;
+  }
+
+  /* Thin engineering grid lines as background texture */
+  .bg-grid {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .text-gradient-red {
+    background: linear-gradient(
+      120deg,
+      var(--accent-bright) 0%,
+      var(--accent-c) 40%,
+      var(--accent-deep) 80%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .text-outline {
+    -webkit-text-stroke: 1px rgba(244, 244, 244, 0.14);
+    color: transparent;
+  }
+
+  .nav-link-line {
+    @apply relative;
+  }
+  .nav-link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 1px;
+    background: var(--accent-c);
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link-line:hover::after {
+    width: 100%;
+  }
+}
+
+/* ── Compositor-only loops ───────────────────────────────────
+   Scroll marquee & pipeline packets run as pure CSS transforms
+   (no JS rAF, no React re-renders). The reduced-motion block at
+   the bottom of this file stops them for users who prefer that. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+
+/* One 4s packet cycle = 3.4s travel + 0.6s hold, replicating the
+   previous JS keyframes (opacity 0→1 at ~33%, hold, out at ~100%). */
+@keyframes packet-travel {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  28% {
+    opacity: 1;
+  }
+  56% {
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(8px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
