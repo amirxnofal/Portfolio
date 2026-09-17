@@ -75,7 +75,7 @@ export default function TechStack() {
           <p className="mt-10 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
             {"// every layer above maps to production code in "}
             <a
-              href={PROJECTS.find((p) => p.featured)!.url}
+              href={PROJECTS.find((p) => p.featured)!.githubUrl}
               target="_blank"
               rel="noreferrer"
               className="text-[var(--text-secondary)] underline decoration-[var(--accent-c)]/60 underline-offset-4 transition-colors hover:text-[var(--accent-bright)]"

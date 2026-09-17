@@ -107,17 +107,34 @@ export default function Projects() {
                   ))}
                 </div>
 
-                <Magnetic strength={0.15} className="self-start">
-                  <a
-                    href={featured.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-3 rounded-full border border-[var(--border-strong)] px-6 py-3 font-mono text-sm text-[var(--text-c)] transition-all duration-300 hover:border-[var(--accent-c)] hover:text-[var(--accent-bright)]"
-                  >
-                    <span>view source</span>
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">↗</span>
-                  </a>
-                </Magnetic>
+                <div className="flex flex-wrap items-center gap-3 self-start">
+                  <Magnetic strength={0.15}>
+                    <a
+                      href={featured.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-3 rounded-full border border-[var(--border-strong)] px-6 py-3 font-mono text-sm text-[var(--text-c)] transition-all duration-300 hover:border-[var(--accent-c)] hover:text-[var(--accent-bright)]"
+                    >
+                      <span>view source</span>
+                      <span className="transition-transform duration-300 group-hover:translate-x-1">↗</span>
+                    </a>
+                  </Magnetic>
+
+                  {/* only rendered for projects that are actually deployed */}
+                  {featured.deployUrl && (
+                    <Magnetic strength={0.15}>
+                      <a
+                        href={featured.deployUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-3 rounded-full border border-[var(--accent-c)]/50 bg-[var(--accent-ghost)] px-6 py-3 font-mono text-sm text-[var(--accent-bright)] transition-all duration-300 hover:border-[var(--accent-c)]"
+                      >
+                        <span>live demo</span>
+                        <span className="transition-transform duration-300 group-hover:translate-x-1">↗</span>
+                      </a>
+                    </Magnetic>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -141,12 +158,12 @@ export default function Projects() {
               delay={0.06 * i}
               className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
             >
-              <a
-                href={p.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex h-full flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent-c)]/50"
-              >
+              {/* The card is no longer one big <a>: it carries a GitHub link
+                  plus an optional deployed link, and anchors can't nest. The
+                  title owns a stretched link (::before covering the card) so
+                  clicking anywhere still opens the repo; the live link below
+                  sits above that overlay with z-10. */}
+              <div className="group relative flex h-full flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent-c)]/50">
                 <div>
                   <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--text-muted)]">
                     <span
@@ -159,14 +176,22 @@ export default function Projects() {
                     {p.language}
                   </div>
                   <h4 className="mt-3 font-mono text-base font-semibold text-[var(--text-c)] transition-colors duration-300 group-hover:text-[var(--accent-bright)]">
-                    {p.name}
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${p.name} — source on GitHub`}
+                      className="before:absolute before:inset-0 before:content-['']"
+                    >
+                      {p.name}
+                    </a>
                   </h4>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
                     {p.description}
                   </p>
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-1.5">
+                <div className="mt-5 flex flex-wrap items-center gap-1.5">
                   {p.tags.slice(0, 3).map((t) => (
                     <span
                       key={t}
@@ -175,11 +200,29 @@ export default function Projects() {
                       {t}
                     </span>
                   ))}
-                  <span className="ml-auto font-mono text-[11px] text-[var(--text-muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent-bright)]">
-                    ↗
-                  </span>
+
+                  <div className="ml-auto flex items-center gap-2">
+                    {/* rendered only when the project is actually deployed */}
+                    {p.deployUrl && (
+                      <a
+                        href={p.deployUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${p.name} — live demo`}
+                        className="relative z-10 inline-flex items-center gap-1 rounded border border-[var(--accent-c)]/40 bg-[var(--accent-ghost)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--accent-bright)] transition-colors duration-300 hover:border-[var(--accent-c)]"
+                      >
+                        live demo <span aria-hidden>↗</span>
+                      </a>
+                    )}
+                    <span
+                      aria-hidden
+                      className="font-mono text-[11px] text-[var(--text-muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent-bright)]"
+                    >
+                      ↗
+                    </span>
+                  </div>
                 </div>
-              </a>
+              </div>
             </Reveal>
           ))}
         </div>

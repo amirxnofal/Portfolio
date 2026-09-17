@@ -127,7 +127,14 @@ export interface Project {
     description: string;
     tags: string[];
     language: string;
-    url: string;
+    /** GitHub repository — every project has one. */
+    githubUrl: string;
+    /**
+     * Live/deployed URL. Optional on purpose: leave it off unless the
+     * project is actually deployed, and the UI renders no live link at
+     * all. Never point this at a placeholder.
+     */
+    deployUrl?: string;
     featured?: boolean;
     details?: string[];
 }
@@ -139,7 +146,8 @@ export const PROJECTS: Project[] = [
             "Full-featured e-commerce platform built solo with Node.js, MongoDB & Express.",
         tags: ["Express", "MongoDB", "Redis", "JWT", "Joi", "Cloudinary"],
         language: "JavaScript",
-        url: `${GITHUB_URL}/E-Commerce`,
+        githubUrl: `${GITHUB_URL}/E-Commerce`,
+        deployUrl: "https://e-commerce-frontend-ebon-five.vercel.app/",
         featured: true,
         details: [
             "47 endpoints across 8 API modules",
@@ -158,7 +166,7 @@ export const PROJECTS: Project[] = [
             "Anonymous confession messaging app built with Node.js & Express.",
         tags: ["Node.js", "Express", "MongoDB"],
         language: "JavaScript",
-        url: `${GITHUB_URL}/Sara7a-App`,
+        githubUrl: `${GITHUB_URL}/Sara7a-App`,
     },
     {
         name: "social-media-app-ts",
@@ -166,23 +174,23 @@ export const PROJECTS: Project[] = [
             "TypeScript rewrite of the social media API — typed models, services & route handlers.",
         tags: ["TypeScript", "Express", "MongoDB"],
         language: "TypeScript",
-        url: `${GITHUB_URL}/social-media-app-ts`,
+        githubUrl: `${GITHUB_URL}/social-media-app-ts`,
     },
     {
-        name: "Sara7a-App",
+        name: "Sara7a-App-Demo",
         description:
             "Anonymous confession messaging app built with Node.js & Express.",
         tags: ["Node.js", "Express", "MongoDB"],
         language: "JavaScript",
-        url: `${GITHUB_URL}/Sara7a-App`,
+        githubUrl: `${GITHUB_URL}/Sara7a-App`,
     },
     {
-        name: "social-media-app-ts",
+        name: "social-media-app-ts-Demo",
         description:
             "TypeScript rewrite of the social media API — typed models, services & route handlers.",
         tags: ["TypeScript", "Express", "MongoDB"],
         language: "TypeScript",
-        url: `${GITHUB_URL}/social-media-app-ts`,
+        githubUrl: `${GITHUB_URL}/social-media-app-ts`,
     },
 ];
 
@@ -197,11 +205,13 @@ export const PROJECTS: Project[] = [
     "One sentence about what it does.",
   tags: ["Express", "Redis", "JWT"], // chips on the card (max 3 show)
   language: "JavaScript",            // dot color: TypeScript → blue
-  url: `${GITHUB_URL}/your-repo-name`,
-  // featured: true,
-  // details: [
-  //   "One bullet per standout fact…",
-  // ],
+  githubUrl: `${GITHUB_URL}/your-repo-name`,
+  deployUrl: "https://…",         // only if it's actually deployed —
+                                //   omit the line and no live link renders
+  featured: true,
+  details: [
+    "One bullet per standout fact…",
+  ],
 },
 */
 
